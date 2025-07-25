@@ -2,3 +2,8 @@
 @plugin "daisyui" {
   themes: all;
 }
+
+
+body {
+  font-family: var(--user-font, "Inter"), sans-serif;
+}

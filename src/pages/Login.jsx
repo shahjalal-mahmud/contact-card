@@ -12,7 +12,21 @@ export default function Login() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme(); // ✅ Use theme context
+  const { theme, toggleTheme, font, toggleFont } = useTheme();
+
+  // Add this array of font options
+  const fontOptions = [
+    "Inter",
+    "Roboto",
+    "Open Sans",
+    "Montserrat",
+    "Poppins",
+    "Lato",
+    "Nunito",
+    "Raleway",
+    "Ubuntu",
+    "Merriweather"
+  ];
 
   useEffect(() => {
     if (error) {
@@ -93,6 +107,21 @@ export default function Login() {
                 <option value="caramellatte">Caramellatte</option>
                 <option value="abyss">abyss</option>
                 <option value="silk">Silk</option>
+              </select>
+            </div>
+
+            {/* Add this font selector dropdown */}
+            <div className="absolute top-4 left-4">
+              <select
+                className="select select-sm select-bordered"
+                value={font}
+                onChange={(e) => toggleFont(e.target.value)}
+              >
+                {fontOptions.map((fontOption) => (
+                  <option key={fontOption} value={fontOption}>
+                    {fontOption}
+                  </option>
+                ))}
               </select>
             </div>
 
