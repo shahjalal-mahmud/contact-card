@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { FaUserGraduate, FaLock, FaEnvelope, FaGoogle, FaGithub } from "react-icons/fa";
 import { MoonLoader } from "react-spinners";
-import { useTheme } from "../context/ThemeContext";
+import ThemeSelector from "../components/ThemeSelector";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -12,21 +12,6 @@ export default function Login() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { theme, toggleTheme, font, toggleFont } = useTheme();
-
-  // Add this array of font options
-  const fontOptions = [
-    "Inter",
-    "Roboto",
-    "Open Sans",
-    "Montserrat",
-    "Poppins",
-    "Lato",
-    "Nunito",
-    "Raleway",
-    "Ubuntu",
-    "Merriweather"
-  ];
 
   useEffect(() => {
     if (error) {
@@ -61,70 +46,13 @@ export default function Login() {
           <MoonLoader color="#3B82F6" size={60} />
         </div>
       )}
-
+      {/* Theme Selector - Now using the reusable component */}
+      <div className="absolute top-4 right-4">
+        <ThemeSelector />
+      </div>
       <div className="w-full max-w-md">
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-            {/* Theme selector */}
-            <div className="absolute top-4 right-4">
-              <select
-                className="select select-sm select-bordered"
-                value={theme}
-                onChange={(e) => toggleTheme(e.target.value)}
-              >
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-                <option value="cupcake">Cupcake</option>
-                <option value="bumblebee">Bumblebee</option>
-                <option value="emerald">Emerald</option>
-                <option value="corporate">Corporate</option>
-                <option value="synthwave">Synthwave</option>
-                <option value="retro">Retro</option>
-                <option value="cyberpunk">Cyberpunk</option>
-                <option value="valentine">Valentine</option>
-                <option value="halloween">Halloween</option>
-                <option value="garden">Garden</option>
-                <option value="forest">Forest</option>
-                <option value="aqua">Aqua</option>
-                <option value="lofi">Lofi</option>
-                <option value="pastel">Pastel</option>
-                <option value="fantasy">Fantasy</option>
-                <option value="wireframe">Wireframe</option>
-                <option value="black">Black</option>
-                <option value="luxury">Luxury</option>
-                <option value="dracula">Dracula</option>
-                <option value="cmyk">CMYK</option>
-                <option value="autumn">Autumn</option>
-                <option value="business">Business</option>
-                <option value="acid">Acid</option>
-                <option value="lemonade">Lemonade</option>
-                <option value="night">Night</option>
-                <option value="coffee">Coffee</option>
-                <option value="winter">Winter</option>
-                <option value="dim">Dim</option>
-                <option value="nord">Nord</option>
-                <option value="sunset">Sunset</option>
-                <option value="caramellatte">Caramellatte</option>
-                <option value="abyss">abyss</option>
-                <option value="silk">Silk</option>
-              </select>
-            </div>
-
-            {/* Add this font selector dropdown */}
-            <div className="absolute top-4 left-4">
-              <select
-                className="select select-sm select-bordered"
-                value={font}
-                onChange={(e) => toggleFont(e.target.value)}
-              >
-                {fontOptions.map((fontOption) => (
-                  <option key={fontOption} value={fontOption}>
-                    {fontOption}
-                  </option>
-                ))}
-              </select>
-            </div>
-
             {/* Header */}
             <div className="text-center mb-6">
               <div className="flex justify-center mb-2">
