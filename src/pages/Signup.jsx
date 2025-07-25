@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { debounce } from "lodash";
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import { registerUser } from "../auth/authUtils";
 import { useNavigate, Link } from "react-router-dom";
 import {
@@ -8,7 +10,8 @@ import {
   FaUser,
   FaEye,
   FaEyeSlash,
-  FaIdCard
+  FaIdCard,
+  FaAt
 } from "react-icons/fa";
 import { MoonLoader } from "react-spinners";
 import ThemeSelector from "../components/ThemeSelector";
@@ -17,10 +20,12 @@ import { ToastContainer } from "../components/CustomToast";
 import { SiGithub, SiGoogle } from "react-icons/si";
 
 export default function Signup() {
+  const { checkUsernameAvailable } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     studentId: "",
+    username: "",
     password: "",
     confirmPassword: ""
   });
@@ -31,6 +36,28 @@ export default function Signup() {
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
   const { toasts, addToast, removeToast } = useToast();
+  const [usernameAvailable, setUsernameAvailable] = useState(null);
+  const [checkingUsername, setCheckingUsername] = useState(false);
+
+  const checkUsername = debounce(async (username) => {
+    if (username.length < 3) {
+      setUsernameAvailable(null);
+      return;
+    }
+
+    setCheckingUsername(true);
+    try {
+      const isAvailable = await checkUsernameAvailable(username.toLowerCase());
+      setUsernameAvailable(isAvailable);
+      if (!isAvailable) {
+        addToast("Username is already taken", "error");
+      }
+    } catch (err) {
+      addToast("Error checking username availability", "error");
+    } finally {
+      setCheckingUsername(false);
+    }
+  }, 500);
 
   useEffect(() => {
     if (error) {
@@ -45,6 +72,11 @@ export default function Signup() {
       ...prev,
       [name]: value
     }));
+
+    // Trigger username check when username field changes
+    if (name === "username") {
+      checkUsername(value);
+    }
   };
 
   const handleSignup = async (e) => {
@@ -56,14 +88,20 @@ export default function Signup() {
       return;
     }
 
+    if (!usernameAvailable) {
+      setError("Please choose an available username");
+      return;
+    }
+
     setIsLoading(true);
     try {
       await registerUser(formData.email, formData.password, {
         name: formData.name,
-        studentId: formData.studentId
+        studentId: formData.studentId,
+        username: formData.username.toLowerCase()
       });
       addToast("Account created successfully! Welcome to your digital portfolio!", "success");
-      navigate("/");
+      navigate(`/profile/${formData.username.toLowerCase()}`);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -121,7 +159,7 @@ export default function Signup() {
                 </label>
                 <div className="flex items-center border border-base-300 rounded-lg bg-base-100 focus-within:ring-2 ring-primary overflow-hidden">
                   <span className="px-3 text-base-content/70">
-                    <FaUser className="text-base-content/70"/>
+                    <FaUser className="text-base-content/70" />
                   </span>
                   <input
                     type="text"
@@ -142,7 +180,7 @@ export default function Signup() {
                 </label>
                 <div className="flex items-center border border-base-300 rounded-lg bg-base-100 focus-within:ring-2 ring-primary overflow-hidden">
                   <span className="px-3 text-base-content/70">
-                    <FaIdCard className="text-base-content/70"/>
+                    <FaIdCard className="text-base-content/70" />
                   </span>
                   <input
                     type="text"
@@ -156,6 +194,43 @@ export default function Signup() {
                 </div>
               </div>
 
+              {/* Username Field */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Username</span>
+                  {usernameAvailable !== null && (
+                    <span className={`label-text-alt ${usernameAvailable ? 'text-success' : 'text-error'}`}>
+                      {usernameAvailable ? 'Available' : 'Taken'}
+                    </span>
+                  )}
+                </label>
+                <div className="flex items-center border border-base-300 rounded-lg bg-base-100 focus-within:ring-2 ring-primary overflow-hidden">
+                  <span className="px-3 text-base-content/70">
+                    <FaAt className="text-base-content/70" />
+                  </span>
+                  <input
+                    type="text"
+                    name="username"
+                    placeholder="yourusername"
+                    className="input border-0 focus:outline-none focus:ring-0 w-full"
+                    value={formData.username}
+                    onChange={handleChange}
+                    required
+                    minLength="3"
+                    pattern="[a-zA-Z0-9_]+"
+                    title="Only letters, numbers and underscores allowed"
+                  />
+                  {checkingUsername && (
+                    <span className="px-3">
+                      <MoonLoader size={16} />
+                    </span>
+                  )}
+                </div>
+                <label className="label">
+                  <span className="label-text-alt">This will be your profile URL (3+ chars, letters/numbers/underscores)</span>
+                </label>
+              </div>
+
               {/* Email Field */}
               <div className="form-control">
                 <label className="label">
@@ -163,7 +238,7 @@ export default function Signup() {
                 </label>
                 <div className="flex items-center border border-base-300 rounded-lg bg-base-100 focus-within:ring-2 ring-primary overflow-hidden">
                   <span className="px-3 text-base-content/70">
-                    <FaEnvelope className="text-base-content/70"/>
+                    <FaEnvelope className="text-base-content/70" />
                   </span>
                   <input
                     type="email"
@@ -184,7 +259,7 @@ export default function Signup() {
                 </label>
                 <div className="flex items-center border border-base-300 rounded-lg bg-base-100 focus-within:ring-2 ring-primary overflow-hidden">
                   <span className="px-3 text-base-content/70">
-                    <FaLock className="text-base-content/70"/>
+                    <FaLock className="text-base-content/70" />
                   </span>
                   <input
                     type={showPassword ? "text" : "password"}
@@ -216,7 +291,7 @@ export default function Signup() {
                 </label>
                 <div className="flex items-center border border-base-300 rounded-lg bg-base-100 focus-within:ring-2 ring-primary overflow-hidden">
                   <span className="px-3 text-base-content/70">
-                    <FaLock className="text-base-content/70"/>
+                    <FaLock className="text-base-content/70" />
                   </span>
                   <input
                     type={showConfirmPassword ? "text" : "password"}
@@ -253,7 +328,7 @@ export default function Signup() {
               <button
                 type="submit"
                 className="btn btn-primary w-full mt-2 group"
-                disabled={isLoading}
+                disabled={isLoading || !usernameAvailable}
               >
                 {isLoading ? (
                   <span className="loading loading-spinner"></span>
