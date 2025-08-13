@@ -4,13 +4,13 @@ import { AuthContext } from "../context/AuthContext";
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase.config";
 import { useEffect } from "react";
-import ProfilePicture from "../components/ProfilePicture";
-import BasicInfo from "../components/BasicInfo";
-import ContactInfo from "../components/ContactInfo";
-import SocialLinks from "../components/SocialLinks";
-import Bio from "../components/Bio";
-import Skills from "../components/Skills";
-import CvButton from "../components/CvButton";
+import ProfilePicture from "../components/profile/ProfilePicture";
+import BasicInfo from "../components/profile/BasicInfo";
+import ContactInfo from "../components/profile/ContactInfo";
+import SocialLinks from "../components/profile/SocialLinks";
+import Bio from "../components/profile/Bio";
+import Skills from "../components/profile/Skills";
+import CvButton from "../components/profile/CvButton";
 
 export default function Profile() {
   const { username } = useParams();
