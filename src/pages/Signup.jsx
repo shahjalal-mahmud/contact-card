@@ -14,7 +14,7 @@ import {
   FaAt
 } from "react-icons/fa";
 import { MoonLoader } from "react-spinners";
-import ThemeSelector from "../components/ThemeSelector";
+// import ThemeSelector from "../components/ThemeSelector";
 import { useToast } from "../hooks/useToast";
 import { ToastContainer } from "../components/CustomToast";
 import { SiGithub, SiGoogle } from "react-icons/si";
@@ -126,9 +126,9 @@ export default function Signup() {
       )}
 
       {/* Theme Selector */}
-      <div className="absolute top-4 right-4">
+      {/* <div className="absolute top-4 right-4">
         <ThemeSelector />
-      </div>
+      </div> */}
 
       <div className="w-full max-w-md">
         <div

@@ -6,6 +6,7 @@ import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import EditProfile from "../pages/EditProfile";
 import ProtectedRoute from "./ProtectedRoute";
+import LandingPage from "../pages/LandingPage";
 
 const router = createBrowserRouter([
   {
@@ -13,7 +14,8 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/profile/:username", element: <Profile /> }, // Changed from :userId to :username
+      { path: "/landing-page", element: <LandingPage />},
+      { path: "/profile/:username", element: <Profile /> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Signup /> },
       { 

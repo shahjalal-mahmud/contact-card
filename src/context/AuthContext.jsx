@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase.config";
 import { doc, getDoc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { logoutUser } from "../auth/authUtils"; // adjust path if needed
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext();
@@ -11,7 +12,6 @@ const AuthProvider = ({ children }) => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Add this function to check username availability
   const checkUsernameAvailable = async (username) => {
     const usersRef = collection(db, "profiles");
     const q = query(usersRef, where("username", "==", username));
@@ -23,21 +23,19 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
-        // Fetch user profile from Firestore
         const profileRef = doc(db, "profiles", currentUser.uid);
         const profileSnap = await getDoc(profileRef);
-        
+
         if (profileSnap.exists()) {
           setProfile(profileSnap.data());
         } else {
-          // Create initial profile if it doesn't exist
           const newProfile = {
-            name: currentUser.email.split('@')[0],
+            name: currentUser.email.split("@")[0],
             email: currentUser.email,
             userId: currentUser.uid,
-            username: '', // Will be set during signup
+            username: "",
             createdAt: new Date().toISOString(),
-            bio: '',
+            bio: "",
             skills: [],
             projects: [],
             education: []
@@ -57,20 +55,33 @@ const AuthProvider = ({ children }) => {
 
   const updateProfile = async (updatedData) => {
     if (!user) return;
-    
     const profileRef = doc(db, "profiles", user.uid);
     await setDoc(profileRef, updatedData, { merge: true });
     setProfile(updatedData);
   };
 
+  // Logout handler
+  const logout = async () => {
+    try {
+      await logoutUser();
+      setUser(null);
+      setProfile(null);
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      profile, 
-      loading, 
-      updateProfile,
-      checkUsernameAvailable // Expose this function
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        profile,
+        loading,
+        updateProfile,
+        checkUsernameAvailable,
+        logout, // ✅ exposed here
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
