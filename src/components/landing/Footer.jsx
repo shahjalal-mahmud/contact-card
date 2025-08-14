@@ -8,7 +8,7 @@ export default function Footer(){
         </aside>
         <nav>
           <a className="link link-hover">Privacy Policy</a>
-          <a className="link link-hover">Terms of Service</a>
+          <a className="link link-hover">Terms of Services</a>
         </nav>
       </footer>
     )
