@@ -30,7 +30,7 @@ export default function Profile() {
         const profilesRef = collection(db, "profiles");
         const q = query(profilesRef, where("username", "==", username.toLowerCase()));
         const querySnapshot = await getDocs(q);
-        
+
         if (!querySnapshot.empty) {
           querySnapshot.forEach((doc) => {
             setUserProfile(doc.data());
@@ -55,6 +55,16 @@ export default function Profile() {
       setUserProfile({ ...userProfile, ...updates });
     } catch (error) {
       console.error("Error updating profile:", error);
+    }
+  };
+
+  const handleSaveProfilePicture = async (imageUrl) => {
+    try {
+      await updateProfile({ profilePicture: imageUrl });
+      // Show success toast/message if you want
+    } catch (error) {
+      console.error("Error saving profile picture:", error);
+      // Show error message
     }
   };
 
@@ -93,10 +103,10 @@ export default function Profile() {
               <ProfilePicture
                 src={userProfile.profilePicture}
                 editable={isEditable}
-                onSave={(image) => updateProfile({ profilePicture: image })}
+                onSave={handleSaveProfilePicture}
               />
             </div>
-            
+
             <div className="flex-grow text-center md:text-left">
               <BasicInfo
                 name={userProfile.name}
@@ -105,7 +115,7 @@ export default function Profile() {
                 editable={isEditable}
                 onSave={(data) => updateProfile(data)}
               />
-              
+
               <ContactInfo
                 email={userProfile.email}
                 phone={userProfile.phone}

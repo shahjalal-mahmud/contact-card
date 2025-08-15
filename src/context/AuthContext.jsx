@@ -1,8 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../firebase/firebase.config";
-import { doc, getDoc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
-import { logoutUser } from "../auth/authUtils"; // adjust path if needed
+import { doc, getDoc, setDoc, collection, query, where, getDocs, updateDoc } from "firebase/firestore";
+import { logoutUser } from "../auth/authUtils";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext();
@@ -13,54 +13,88 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const checkUsernameAvailable = async (username) => {
-    const usersRef = collection(db, "profiles");
-    const q = query(usersRef, where("username", "==", username));
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.empty;
+    try {
+      const usersRef = collection(db, "profiles");
+      const q = query(usersRef, where("username", "==", username.toLowerCase()));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.empty;
+    } catch (error) {
+      console.error("Error checking username:", error);
+      return false;
+    }
   };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        const profileRef = doc(db, "profiles", currentUser.uid);
-        const profileSnap = await getDoc(profileRef);
+      setLoading(true);
+      try {
+        if (currentUser) {
+          setUser(currentUser);
+          const profileRef = doc(db, "profiles", currentUser.uid);
+          const profileSnap = await getDoc(profileRef);
 
-        if (profileSnap.exists()) {
-          setProfile(profileSnap.data());
+          if (profileSnap.exists()) {
+            setProfile(profileSnap.data());
+          } else {
+            const newProfile = {
+              name: currentUser.displayName || currentUser.email.split("@")[0],
+              email: currentUser.email,
+              userId: currentUser.uid,
+              username: "",
+              profilePicture: currentUser.photoURL || "",
+              createdAt: new Date(),
+              bio: "",
+              profession: "",
+              location: "",
+              phone: "",
+              skills: [],
+              socialLinks: [],
+              education: [],
+              projects: [],
+              cvUrl: ""
+            };
+            await setDoc(profileRef, newProfile);
+            setProfile(newProfile);
+          }
         } else {
-          const newProfile = {
-            name: currentUser.email.split("@")[0],
-            email: currentUser.email,
-            userId: currentUser.uid,
-            username: "",
-            createdAt: new Date().toISOString(),
-            bio: "",
-            skills: [],
-            projects: [],
-            education: []
-          };
-          await setDoc(profileRef, newProfile);
-          setProfile(newProfile);
+          setUser(null);
+          setProfile(null);
         }
-      } else {
-        setUser(null);
-        setProfile(null);
+      } catch (error) {
+        console.error("Auth state change error:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
+  // In your AuthProvider component
   const updateProfile = async (updatedData) => {
-    if (!user) return;
-    const profileRef = doc(db, "profiles", user.uid);
-    await setDoc(profileRef, updatedData, { merge: true });
-    setProfile(updatedData);
+    if (!user || !profile) return;
+
+    try {
+      const profileRef = doc(db, "profiles", user.uid);
+
+      // Clean data - ensure image URLs are strings
+      const cleanData = {
+        ...updatedData,
+        profilePicture: typeof updatedData.profilePicture === 'string'
+          ? updatedData.profilePicture
+          : profile.profilePicture
+      };
+
+      await updateDoc(profileRef, cleanData);
+      setProfile(prev => ({ ...prev, ...cleanData }));
+
+      return true;
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      return false;
+    }
   };
 
-  // Logout handler
   const logout = async () => {
     try {
       await logoutUser();
@@ -79,7 +113,7 @@ const AuthProvider = ({ children }) => {
         loading,
         updateProfile,
         checkUsernameAvailable,
-        logout, // ✅ exposed here
+        logout,
       }}
     >
       {children}
