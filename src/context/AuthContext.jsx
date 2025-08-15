@@ -51,7 +51,10 @@ const AuthProvider = ({ children }) => {
               socialLinks: [],
               education: [],
               projects: [],
-              cvUrl: ""
+              cvUrl: "",
+              cvName: "",
+              cvSize: 0,
+              cvPublicId: ""
             };
             await setDoc(profileRef, newProfile);
             setProfile(newProfile);

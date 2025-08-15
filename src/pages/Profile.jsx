@@ -67,6 +67,18 @@ export default function Profile() {
       // Show error message
     }
   };
+  const handleCvUpload = async (cvData) => {
+    try {
+      await updateProfile({
+        cvUrl: cvData?.url || null,
+        cvName: cvData?.name || null,
+        cvSize: cvData?.size || null,
+        cvPublicId: cvData?.publicId || null
+      });
+    } catch (error) {
+      console.error("Error saving CV:", error);
+    }
+  };
 
   if (loading) {
     return (
@@ -165,13 +177,14 @@ export default function Profile() {
             {/* CV Section */}
             <div className="bg-base-100 rounded-box shadow-sm border border-base-300 p-6">
               <CvButton
-                hasCv={!!userProfile.cvUrl}
+                hasCv={!!userProfile?.cvUrl}
                 editable={isEditable}
-                onUpload={async (file) => {
-                  // Implement file upload logic here
-                  // For now just simulating
-                  const cvUrl = "path/to/uploaded/file.pdf";
-                  await updateProfile({ cvUrl });
+                onUpload={handleCvUpload}
+                cvData={{
+                  url: userProfile?.cvUrl,
+                  name: userProfile?.cvName,
+                  size: userProfile?.cvSize,
+                  publicId: userProfile?.cvPublicId
                 }}
               />
             </div>
