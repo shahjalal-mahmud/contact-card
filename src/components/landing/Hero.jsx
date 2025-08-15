@@ -3,7 +3,7 @@ export default function Hero(){
         <section className="hero min-h-screen bg-gradient-to-r from-primary to-secondary text-white" id="hero">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <img
-            src="/portfolio-demo.png"
+            src="/NFC.png"
             alt="Portfolio Preview"
             className="max-w-sm rounded-lg shadow-2xl"
           />
