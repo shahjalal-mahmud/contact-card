@@ -4,7 +4,7 @@ export default function NavbarGuest() {
   return (
     <div className="navbar bg-base-100 shadow-md px-6">
       <div className="flex-1">
-        <Link to="/" className="text-xl font-bold">
+        <Link to="/login" className="text-xl font-bold">
           MyBrand
         </Link>
       </div>

@@ -3,17 +3,17 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 export default function NavbarUser() {
-  const { user, profile, logout } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
 
   return (
     <div className="navbar bg-base-100 shadow-md px-6">
       <div className="flex-1">
-        <Link to={`/profile/${profile?.username || user.uid}`} className="text-xl font-bold">
+        <Link to={`/${user.uid}`} className="text-xl font-bold">
           MyBrand
         </Link>
       </div>
       <div className="flex-none gap-2">
-        <Link to={`/profile/${profile?.username || user.uid}`} className="btn btn-ghost">
+        <Link to={`/${user.uid}`} className="btn btn-ghost">
           My Profile
         </Link>
         <Link to="/edit-profile" className="btn btn-ghost">

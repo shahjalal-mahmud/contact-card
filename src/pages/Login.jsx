@@ -38,7 +38,7 @@ export default function Login() {
     try {
       await loginUser(email, password);
       addToast("Login successful! Welcome back!", "success");
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       setError(err.message);
     } finally {

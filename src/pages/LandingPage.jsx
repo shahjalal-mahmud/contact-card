@@ -30,9 +30,6 @@ export default function LandingPage() {
       {/* Request New Feature Section */}
       <Request />
 
-      {/* Report a Bug Section */}
-      <Report />
-
       {/* Footer */}
       <Footer />
     </div>

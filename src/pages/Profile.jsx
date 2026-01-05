@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase.config";
 import { useEffect } from "react";
 import ProfilePicture from "../components/profile/ProfilePicture";
@@ -13,48 +13,42 @@ import Skills from "../components/profile/Skills";
 import CvButton from "../components/profile/CvButton";
 
 export default function Profile() {
-  const { username } = useParams();
-  const { user, profile } = useContext(AuthContext);
+  const { userId } = useParams();
+  const { user } = useContext(AuthContext);
+
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        if (profile && profile.username === username) {
-          setUserProfile(profile);
-          setLoading(false);
-          return;
-        }
+        const profileRef = doc(db, "profiles", userId);
+        const snap = await getDoc(profileRef);
 
-        const profilesRef = collection(db, "profiles");
-        const q = query(profilesRef, where("username", "==", username.toLowerCase()));
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-          querySnapshot.forEach((doc) => {
-            setUserProfile(doc.data());
-          });
+        if (snap.exists()) {
+          setUserProfile({ userId, ...snap.data() });
         }
-      } catch (error) {
-        console.error("Error fetching profile:", error);
+      } catch (err) {
+        console.error("Error fetching profile:", err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProfile();
-  }, [username, profile]);
+  }, [userId]);
 
-  const isEditable = user && userProfile && user.uid === userProfile.userId;
+  const isEditable = user && user.uid === userProfile?.userId;
 
   const updateProfile = async (updates) => {
+    if (!isEditable) return;
+
     try {
-      const profileRef = doc(db, "profiles", userProfile.userId);
-      await updateDoc(profileRef, updates);
-      setUserProfile({ ...userProfile, ...updates });
-    } catch (error) {
-      console.error("Error updating profile:", error);
+      const ref = doc(db, "profiles", userProfile.userId);
+      await updateDoc(ref, updates);
+      setUserProfile(prev => ({ ...prev, ...updates }));
+    } catch (err) {
+      console.error("Update failed:", err);
     }
   };
 
