@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { uploadImageToImgBB } from "../../utilis/imageUpload";
 
-export default function ProfilePicture({ src, editable, onSave, isDarkMode = false }) {
+export default function ProfilePicture({ src, editable, onSave }) {
   const [isEditing, setIsEditing] = useState(false);
   const [image, setImage] = useState(src);
   const [isHovered, setIsHovered] = useState(false);
@@ -60,31 +60,21 @@ export default function ProfilePicture({ src, editable, onSave, isDarkMode = fal
   return (
     <div className="relative group">
       {/* Decorative background blur */}
-      <div className={`absolute -inset-4 rounded-full blur-2xl opacity-30 ${
-        isDarkMode ? 'bg-blue-500' : 'bg-blue-400'
-      }`}></div>
+      <div className="absolute -inset-4 rounded-full blur-2xl opacity-30 bg-primary/30"></div>
       
       {/* Profile picture container */}
-      <div className={`relative w-40 h-40 md:w-48 md:h-48 rounded-3xl overflow-hidden border-4 transition-all duration-500 hover:scale-105 ${
-        isDarkMode 
-          ? 'border-blue-500/30 shadow-2xl shadow-blue-500/20' 
-          : 'border-blue-400/30 shadow-2xl shadow-blue-400/20'
-      }`}>
+      <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-3xl overflow-hidden border-4 border-primary/30 shadow-2xl shadow-primary/20 transition-all duration-500 hover:scale-105">
         {isEditing ? (
-          <div className={`flex flex-col gap-4 p-6 h-full justify-center items-center ${
-            isDarkMode ? 'bg-gray-800' : 'bg-gray-50'
-          }`}>
+          <div className="flex flex-col gap-4 p-6 h-full justify-center items-center bg-base-100">
             <div className="w-full space-y-4">
               <label className="block">
-                <span className={`block mb-2 text-sm font-medium ${
-                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
-                }`}>
+                <span className="block mb-2 text-sm font-medium text-base-content">
                   Upload New Photo
                 </span>
                 <input
                   type="file"
                   onChange={handleImageChange}
-                  className="file-input file-input-bordered w-full max-w-xs bg-transparent"
+                  className="file-input file-input-bordered file-input-primary w-full max-w-xs"
                   accept="image/*"
                   disabled={uploadProgress !== null}
                 />
@@ -93,7 +83,7 @@ export default function ProfilePicture({ src, editable, onSave, isDarkMode = fal
               {uploadProgress && (
                 <div className="flex items-center gap-3">
                   <div className="loading loading-spinner loading-sm text-primary"></div>
-                  <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  <span className="text-sm text-base-content/70">
                     {uploadProgress}
                   </span>
                 </div>
@@ -119,11 +109,7 @@ export default function ProfilePicture({ src, editable, onSave, isDarkMode = fal
               </button>
               <button
                 onClick={handleCancel}
-                className={`btn btn-sm px-6 rounded-lg hover:scale-105 transition-transform ${
-                  isDarkMode 
-                    ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' 
-                    : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                }`}
+                className="btn btn-outline btn-sm px-6 rounded-lg hover:scale-105 transition-transform"
               >
                 Cancel
               </button>
