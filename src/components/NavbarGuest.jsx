@@ -12,9 +12,6 @@ export default function NavbarGuest() {
         <Link to="/login" className="btn btn-ghost">
           Login
         </Link>
-        <Link to="/signup" className="btn btn-primary">
-          Sign Up
-        </Link>
       </div>
     </div>
   );
