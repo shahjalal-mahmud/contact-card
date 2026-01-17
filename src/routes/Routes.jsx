@@ -14,7 +14,6 @@ const router = createBrowserRouter([
 
       // ---------- PUBLIC AUTH ----------
       { path: "login", element: <Login /> },
-      { path: "signup", element: <Signup /> },
 
       // ---------- PRIVATE ----------
       {
@@ -36,7 +35,7 @@ const router = createBrowserRouter([
       },
 
       // ---------- PUBLIC NFC PROFILE (LAST) ----------
-      { path: ":userId", element: <Profile /> },
+      { path: ":username", element: <Profile /> },
     ],
   },
 ]);

@@ -14,7 +14,7 @@ import CvButton from "../components/profile/CvButton";
 import { Share2, Download, UserPlus, Briefcase } from "lucide-react";
 
 export default function Profile() {
-  const { userId } = useParams();
+  const { username } = useParams();
   const { user } = useContext(AuthContext);
 
   const [userProfile, setUserProfile] = useState(null);
@@ -23,11 +23,11 @@ export default function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const profileRef = doc(db, "profiles", userId);
+        const profileRef = doc(db, "profiles", username);
         const snap = await getDoc(profileRef);
 
         if (snap.exists()) {
-          setUserProfile({ userId, ...snap.data() });
+          setUserProfile({ username, ...snap.data() });
         }
       } catch (err) {
         console.error("Error fetching profile:", err);
@@ -37,7 +37,7 @@ export default function Profile() {
     };
 
     fetchProfile();
-  }, [userId]);
+  }, [username]);
 
   const isEditable = user && user.uid === userProfile?.userId;
 

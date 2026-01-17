@@ -5,13 +5,10 @@ import {
   FaUserGraduate,
   FaLock,
   FaEnvelope,
-  FaGoogle,
-  FaGithub,
   FaEye,
   FaEyeSlash
 } from "react-icons/fa";
 import { MoonLoader } from "react-spinners";
-// import ThemeSelector from "../components/ThemeSelector";
 import { useToast } from "../hooks/useToast";
 import { ToastContainer } from "../components/CustomToast";
 
@@ -46,10 +43,6 @@ export default function Login() {
     }
   };
 
-  const handleSocialLogin = (provider) => {
-    addToast(`Coming soon: ${provider} login`, "info");
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10">
       {/* Toast Container */}
@@ -61,11 +54,6 @@ export default function Login() {
           <MoonLoader color="hsl(var(--p))" size={60} />
         </div>
       )}
-
-      {/* Theme Selector */}
-      {/* <div className="absolute top-4 right-4">
-        <ThemeSelector />
-      </div> */}
 
       <div className="w-full max-w-md">
         <div
@@ -82,9 +70,9 @@ export default function Login() {
                 </div>
               </div>
               <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Campus Connect
+                Professional Card
               </h2>
-              <p className="text-sm opacity-70 mt-1">Your gateway to academic excellence</p>
+              <p className="text-sm opacity-70 mt-1">Your complete professional identity — in one tap.</p>
             </div>
 
             {/* Login Form */}
@@ -92,7 +80,7 @@ export default function Login() {
               {/* Email Field */}
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">University Email</span>
+                  <span className="label-text">Your Email</span>
                 </label>
                 <div className="flex items-center border border-base-300 rounded-lg bg-base-100 focus-within:ring-2 ring-primary overflow-hidden">
                   <span className="px-3 text-base-content/70">
@@ -100,7 +88,7 @@ export default function Login() {
                   </span>
                   <input
                     type="email"
-                    placeholder="student@university.edu"
+                    placeholder="example@gmail.com"
                     className="input border-0 focus:outline-none focus:ring-0 w-full"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -164,38 +152,6 @@ export default function Login() {
                 )}
               </button>
             </form>
-
-            {/* Divider */}
-            <div className="divider my-6 text-base-content/50">or continue with</div>
-
-            {/* Social Login */}
-            <div className="flex gap-4 justify-center">
-              <button
-                onClick={() => handleSocialLogin("Google")}
-                className="btn btn-outline btn-circle text-primary hover:bg-primary/10 hover:text-primary transition-colors"
-                aria-label="Login with Google"
-              >
-                <FaGoogle className="text-xl" />
-              </button>
-              <button
-                onClick={() => handleSocialLogin("GitHub")}
-                className="btn btn-outline btn-circle text-primary hover:bg-primary/10 hover:text-primary transition-colors"
-                aria-label="Login with GitHub"
-              >
-                <FaGithub className="text-xl" />
-              </button>
-            </div>
-
-
-            {/* Footer */}
-            <div className="text-center mt-8 text-sm">
-              <p className="text-base-content/70">
-                New to Campus Connect?{" "}
-                <a href="/signup" className="link link-primary font-medium">
-                  Create account
-                </a>
-              </p>
-            </div>
           </div>
         </div>
       </div>
