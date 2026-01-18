@@ -1,8 +1,7 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import Profile from "../pages/Profile";
 import Login from "../pages/Login";
-import Signup from "../pages/Signup";
 import EditProfile from "../pages/EditProfile";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -11,20 +10,11 @@ const router = createBrowserRouter([
     path: "/",
     element: <MainLayout />,
     children: [
-
-      // ---------- PUBLIC AUTH ----------
+      // Redirect root to a default profile or login
+      { path: "", element: <Navigate to="/login" replace /> },
+      
       { path: "login", element: <Login /> },
-
-      // ---------- PRIVATE ----------
-      {
-        path: "dashboard",
-        element: (
-          <ProtectedRoute>
-            <EditProfile />
-          </ProtectedRoute>
-        ),
-      },
-
+      
       {
         path: "edit-profile",
         element: (
@@ -34,7 +24,6 @@ const router = createBrowserRouter([
         ),
       },
 
-      // ---------- PUBLIC NFC PROFILE (LAST) ----------
       { path: ":username", element: <Profile /> },
     ],
   },
