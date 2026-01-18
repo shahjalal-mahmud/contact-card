@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { uploadToCloudinary, deleteFromCloudinary } from "../../utilis/cloudinary";
+import { uploadToCloudinary } from "../../utilis/cloudinary";
 
 export default function CvButton({ hasCv, editable, onUpload, cvData }) {
   const [isUploading, setIsUploading] = useState(false);
@@ -47,13 +47,11 @@ export default function CvButton({ hasCv, editable, onUpload, cvData }) {
     }
   };
   const handleDelete = async () => {
-    if (cvData?.publicId) {
-      try {
-        await deleteFromCloudinary(cvData.publicId);
-        await onUpload(null); // Pass null to indicate deletion
-      } catch (error) {
-        setError('Failed to delete CV');
-      }
+    try {
+      // Just remove CV reference from DB/state
+      await onUpload(null);
+    } catch (error) {
+      setError("Failed to remove CV");
     }
   };
 

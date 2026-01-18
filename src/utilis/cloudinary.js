@@ -1,51 +1,45 @@
+// src/utilis/cloudinary.js
+
+const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const PROFILE_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+/**
+ * Upload image/file to Cloudinary (unsigned)
+ */
 export const uploadToCloudinary = async (file) => {
   const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
-  
-  try {
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/upload`,
-      {
-        method: 'POST',
-        body: formData
-      }
-    );
-    
-    const data = await response.json();
-    
-    if (data.error) {
-      throw new Error(data.error.message);
+  formData.append("file", file);
+  formData.append("upload_preset", PROFILE_PRESET);
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`,
+    {
+      method: "POST",
+      body: formData,
     }
-    
-    return {
-      url: data.secure_url,
-      publicId: data.public_id,
-      format: data.format,
-      bytes: data.bytes
-    };
-  } catch (error) {
-    console.error('Cloudinary upload error:', error);
-    throw error;
+  );
+
+  const data = await response.json();
+
+  if (!response.ok || data.error) {
+    throw new Error(data?.error?.message || "Cloudinary upload failed");
   }
+
+  return {
+    url: data.secure_url,
+    publicId: data.public_id,
+    bytes: data.bytes,
+    format: data.format,
+  };
 };
-export const deleteFromCloudinary = async (publicId) => {
-  try {
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/delete_by_token`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          public_id: publicId
-        })
-      }
-    );
-    return await response.json();
-  } catch (error) {
-    console.error('Cloudinary delete error:', error);
-    throw error;
-  }
+
+/**
+ * ❌ Frontend delete is NOT SAFE
+ * Keep this as a stub or remove calls entirely
+ */
+export const deleteFromCloudinary = async () => {
+  console.warn(
+    "Cloudinary deletion is disabled on frontend for security reasons."
+  );
+  return true;
 };
