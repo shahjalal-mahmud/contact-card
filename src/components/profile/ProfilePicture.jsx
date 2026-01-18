@@ -12,24 +12,13 @@ export default function ProfilePicture({ src, editable, onSave }) {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      setError("Please upload an image file");
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Image must be under 5MB");
-      return;
-    }
-
-    setError(null);
-    setUploading(true);
-
     try {
+      setUploading(true);
+      setError(null); // Clear previous errors
       const result = await uploadToCloudinary(file);
       setImage(result.url);
     } catch (err) {
-      setError(err.message || "Upload failed");
+      setError(err.message || "Failed to upload image");
     } finally {
       setUploading(false);
     }

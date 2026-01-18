@@ -9,33 +9,20 @@ export default function CvButton({ hasCv, editable, onUpload, cvData }) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
-    const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-    if (!validTypes.includes(file.type)) {
-      setError('Only PDF, DOC, and DOCX files are allowed');
-      return;
-    }
-
-    // Validate file size (5MB max)
-    if (file.size > 5 * 1024 * 1024) {
-      setError('File must be smaller than 5MB');
-      return;
-    }
-
-    setError(null);
-    setIsUploading(true);
-
     try {
+      setIsUploading(true);
+      setError(null);
       const result = await uploadToCloudinary(file);
+
       await onUpload({
         url: result.url,
         name: file.name,
         size: file.size,
         type: file.type,
-        publicId: result.publicId
+        publicId: result.publicId,
       });
-    } catch (error) {
-      setError(error.message || 'Failed to upload CV');
+    } catch (err) {
+      setError(err.message || "Failed to upload CV");
     } finally {
       setIsUploading(false);
     }
@@ -46,9 +33,9 @@ export default function CvButton({ hasCv, editable, onUpload, cvData }) {
       window.open(cvData.url, '_blank');
     }
   };
+
   const handleDelete = async () => {
     try {
-      // Just remove CV reference from DB/state
       await onUpload(null);
     } catch (error) {
       setError("Failed to remove CV");
