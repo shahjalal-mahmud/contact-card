@@ -6,9 +6,8 @@ import { db } from "../firebase/firebase.config";
 
 import ProfilePicture from "../components/profile/ProfilePicture";
 import BasicInfo from "../components/profile/BasicInfo";
-import ContactInfo from "../components/profile/ContactInfo";
 import SocialLinks from "../components/profile/SocialLinks";
-import ProfileActions from "../components/profile/ProfileActions"; // New Import
+import ProfileActions from "../components/profile/ProfileActions";
 
 export default function Profile() {
   const { username } = useParams();
@@ -89,7 +88,7 @@ export default function Profile() {
         <div className="max-w-6xl mx-auto rounded-3xl p-6 md:p-12 transition-all duration-300 relative overflow-hidden bg-gradient-to-br from-base-100 to-base-200 border border-base-300 shadow-2xl shadow-base-300/20">
           <div className="relative z-10">
             <div className="flex flex-col items-center text-center">
-              
+
               <div className="relative mb-8">
                 <div className="absolute inset-0 rounded-3xl blur-2xl opacity-30 bg-primary/30"></div>
                 <div className="relative">
@@ -104,21 +103,12 @@ export default function Profile() {
               <div className="mb-8 max-w-2xl">
                 <BasicInfo
                   name={userProfile.name}
-                  profession={userProfile.profession}
-                  location={userProfile.location}
                   tagline={userProfile.tagline}
+                  email={userProfile.email}
+                  phone={userProfile.phone}
                   editable={isEditable}
                   onSave={(data) => updateProfile(data)}
                 />
-
-                <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
-                  <ContactInfo
-                    email={userProfile.email}
-                    phone={userProfile.phone}
-                    editable={isEditable}
-                    onSave={(data) => updateProfile(data)}
-                  />
-                </div>
               </div>
 
               {/* Refactored Action Buttons Component */}
