@@ -1,8 +1,25 @@
 import React, { useState } from "react";
-import { FiEdit3, FiUser, FiMail, FiPhone } from "react-icons/fi";
+import {
+  FiEdit3,
+  FiUser,
+  FiMail,
+  FiPhone,
+  FiBriefcase,
+} from "react-icons/fi";
 
-export default function BasicInfo({ name, tagline, email, phone, editable, onSave }) {
-  const [editData, setEditData] = useState({ name, tagline, phone });
+export default function BasicInfo({
+  name,
+  tagline,
+  email,
+  phone,
+  editable = false,
+  onSave,
+}) {
+  const [editData, setEditData] = useState({
+    name: name || "",
+    tagline: tagline || "",
+    phone: phone || "",
+  });
 
   const handleSave = () => {
     onSave(editData);
@@ -10,122 +27,163 @@ export default function BasicInfo({ name, tagline, email, phone, editable, onSav
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 sm:px-0">
-      {/* ELITE IDENTITY SECTION */}
-      <div className="relative flex flex-col items-center text-center md:text-left md:items-start gap-4">
-        
-        {/* Name Section */}
-        <div className="group flex items-center justify-center md:justify-start gap-3 w-full">
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter text-base-content uppercase leading-[0.9]">
-            {name || "User Name"}
-          </h1>
-          
-          {editable && (
+    <section className="w-full max-w-5xl mx-auto px-4 sm:px-6">
+      {/* IDENTITY HEADER (NO CARD) */}
+      <div className="relative flex flex-col gap-2">
+        {/* Edit action */}
+        {editable && (
+          <div className="absolute right-0 top-0">
             <button
-              onClick={() => document.getElementById("basic_info_modal").showModal()}
-              className="btn btn-ghost btn-circle btn-sm text-primary md:opacity-0 group-hover:opacity-100 transition-all"
+              onClick={() =>
+                document.getElementById("basic_info_modal").showModal()
+              }
+              className="btn btn-ghost btn-sm gap-2 text-base-content/60 hover:text-primary"
             >
-              <FiEdit3 size={22} />
+              <FiEdit3 size={16} />
+              Edit
             </button>
-          )}
-        </div>
-
-        {/* LinkedIn-Style Headline */}
-        <div className="relative">
-          <p className="text-lg sm:text-xl md:text-2xl font-medium text-primary/90 max-w-2xl leading-snug">
-            {tagline || "Your professional headline goes here..."}
-          </p>
-          <div className="hidden md:block absolute -left-6 top-1/2 -translate-y-1/2 w-1 h-12 bg-primary/20 rounded-full"></div>
-        </div>
-
-        {/* MERGED CONTACT INFO DISPLAY */}
-        <div className="flex flex-col sm:flex-row gap-4 mt-2 w-full justify-center md:justify-start">
-          {/* Email Card */}
-          <div className="flex items-center gap-3 p-3 px-5 rounded-2xl transition-all hover:scale-105 bg-base-100 border border-base-300 shadow-md">
-            <FiMail className="text-primary" />
-            <span className="font-medium text-base-content text-sm sm:text-base">{email}</span>
           </div>
-          
-          {/* Phone Card */}
-          <div className="flex items-center gap-3 p-3 px-5 rounded-2xl transition-all hover:scale-105 bg-base-100 border border-base-300 shadow-md">
-            <FiPhone className="text-primary" />
-            <span className="font-medium text-base-content text-sm sm:text-base">
-              {phone || "No phone provided"}
-            </span>
+        )}
+
+        {/* Name */}
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-base-content">
+          {name || "Your Name"}
+        </h1>
+
+        {/* Profession / Headline (LinkedIn style) */}
+        <div className="flex items-center gap-2 text-base-content/70">
+          <FiBriefcase size={16} />
+          <span className="text-sm sm:text-base font-medium">
+            {tagline || "Your professional headline"}
+          </span>
+        </div>
+
+        {/* Contact row */}
+        <div className="flex flex-col sm:flex-row gap-x-6 gap-y-2 mt-3 text-sm text-base-content/70">
+          <div className="flex items-center gap-2">
+            <FiMail size={15} />
+            <span className="break-all">{email}</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <FiPhone size={15} />
+            <span>{phone || "No phone number added"}</span>
           </div>
         </div>
       </div>
 
-      {/* ELITE MODAL: EDITING EVERYTHING */}
-      <dialog id="basic_info_modal" className="modal modal-bottom sm:modal-middle backdrop-blur-xl">
-        <div className="modal-box bg-base-100 border border-base-300 shadow-2xl p-8">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-primary-content shadow-lg shadow-primary/30">
-              <FiUser size={24} />
+      {/* EDIT MODAL */}
+      <dialog
+        id="basic_info_modal"
+        className="modal modal-bottom sm:modal-middle backdrop-blur-sm"
+      >
+        <div className="modal-box max-w-lg bg-base-100 rounded-t-2xl sm:rounded-2xl">
+          {/* Modal header */}
+          <div className="flex items-start gap-4 mb-6">
+            <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+              <FiUser size={20} />
             </div>
-            <div>
-              <h3 className="font-black text-2xl uppercase tracking-tight">Edit Profile Info</h3>
-              <p className="text-sm text-base-content/50">Update your primary identity and contact details</p>
+
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-base-content">
+                Edit basic information
+              </h3>
+              <p className="text-sm text-base-content/60 mt-0.5">
+                This information appears on your public profile
+              </p>
             </div>
           </div>
-          
-          <div className="space-y-6">
-            {/* Name Input */}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text font-bold uppercase tracking-widest text-xs opacity-60">Full Name</span>
+
+          {/* Form */}
+          <div className="space-y-4">
+            {/* Name */}
+            <div className="form-control">
+              <label className="label pb-1">
+                <span className="label-text text-xs font-medium text-base-content/60">
+                  Full name
+                </span>
               </label>
               <input
                 type="text"
-                className="input input-bordered input-lg focus:input-primary w-full bg-base-200 font-bold"
+                className="input input-bordered bg-base-200"
                 value={editData.name}
-                onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                onChange={(e) =>
+                  setEditData({ ...editData, name: e.target.value })
+                }
               />
             </div>
 
-            {/* Phone Input */}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text font-bold uppercase tracking-widest text-xs opacity-60">Phone Number</span>
+            {/* Profession */}
+            <div className="form-control">
+              <label className="label pb-1">
+                <span className="label-text text-xs font-medium text-base-content/60">
+                  Profession / Headline
+                </span>
+              </label>
+              <input
+                type="text"
+                className="input input-bordered bg-base-200"
+                placeholder="e.g. Software Engineer at Appriyo"
+                value={editData.tagline}
+                onChange={(e) =>
+                  setEditData({ ...editData, tagline: e.target.value })
+                }
+              />
+            </div>
+
+            {/* Phone */}
+            <div className="form-control">
+              <label className="label pb-1">
+                <span className="label-text text-xs font-medium text-base-content/60">
+                  Phone number
+                </span>
               </label>
               <input
                 type="tel"
-                className="input input-bordered focus:input-primary w-full bg-base-200"
-                placeholder="+1 (123) 456-7890"
+                className="input input-bordered bg-base-200"
+                placeholder="+880 XXXXXXXX"
                 value={editData.phone}
-                onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
+                onChange={(e) =>
+                  setEditData({ ...editData, phone: e.target.value })
+                }
               />
             </div>
 
-            {/* Tagline Input */}
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text font-bold uppercase tracking-widest text-xs opacity-60">Headline (Tagline)</span>
+            {/* Email (locked) */}
+            <div className="form-control">
+              <label className="label pb-1">
+                <span className="label-text text-xs font-medium text-base-content/60">
+                  Email address
+                </span>
               </label>
-              <textarea
-                className="textarea textarea-bordered focus:textarea-primary h-32 bg-base-200 text-lg leading-tight"
-                placeholder="e.g. Senior Software Architect | Open Source Contributor"
-                value={editData.tagline}
-                onChange={(e) => setEditData({ ...editData, tagline: e.target.value })}
+              <input
+                type="email"
+                disabled
+                className="input input-bordered bg-base-300 text-base-content/60 cursor-not-allowed"
+                value={email}
               />
             </div>
           </div>
 
-          <div className="modal-action mt-10">
+          {/* Actions */}
+          <div className="modal-action mt-7">
             <form method="dialog" className="flex w-full gap-3">
-              <button className="btn btn-ghost flex-1 text-base-content/50">Discard</button>
-              <button 
-                type="button" 
-                onClick={handleSave} 
-                className="btn btn-primary flex-[2] shadow-xl shadow-primary/20 text-lg"
+              <button className="btn btn-ghost flex-1">Cancel</button>
+              <button
+                type="button"
+                onClick={handleSave}
+                className="btn btn-primary flex-[2]"
               >
-                Save Changes
+                Save changes
               </button>
             </form>
           </div>
         </div>
-        <form method="dialog" className="modal-backdrop"><button className="cursor-default">close</button></form>
+
+        <form method="dialog" className="modal-backdrop">
+          <button aria-label="Close modal">close</button>
+        </form>
       </dialog>
-    </div>
+    </section>
   );
 }

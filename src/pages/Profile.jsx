@@ -84,44 +84,42 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-base-200">
-      <div className="py-8 md:py-12 px-4">
-        <div className="max-w-6xl mx-auto rounded-3xl p-6 md:p-12 transition-all duration-300 relative overflow-hidden bg-gradient-to-br from-base-100 to-base-200 border border-base-300 shadow-2xl shadow-base-300/20">
-          <div className="relative z-10">
-            <div className="flex flex-col items-center text-center">
+      <div className="max-w-6xl mx-auto rounded-3xl p-6 md:p-12 transition-all duration-300 relative overflow-hidden bg-gradient-to-br from-base-100 to-base-200 border border-base-300 shadow-2xl shadow-base-300/20">
+        <div className="relative z-10">
+          <div className="flex flex-col items-center text-center">
 
-              <div className="relative mb-8">
-                <div className="absolute inset-0 rounded-3xl blur-2xl opacity-30 bg-primary/30"></div>
-                <div className="relative">
-                  <ProfilePicture
-                    src={userProfile.profilePicture}
-                    editable={isEditable}
-                    onSave={handleSaveProfilePicture}
-                  />
-                </div>
-              </div>
-
-              <div className="mb-8 max-w-2xl">
-                <BasicInfo
-                  name={userProfile.name}
-                  tagline={userProfile.tagline}
-                  email={userProfile.email}
-                  phone={userProfile.phone}
+            <div className="relative mb-8">
+              <div className="absolute inset-0 rounded-3xl blur-2xl opacity-30 bg-primary/30"></div>
+              <div className="relative">
+                <ProfilePicture
+                  src={userProfile.profilePicture}
                   editable={isEditable}
-                  onSave={(data) => updateProfile(data)}
-                />
-              </div>
-
-              {/* Refactored Action Buttons Component */}
-              <ProfileActions userProfile={userProfile} />
-
-              <div className="w-full max-w-md">
-                <SocialLinks
-                  links={userProfile.socialLinks || []}
-                  editable={isEditable}
-                  onSave={(socialLinks) => updateProfile({ socialLinks })}
+                  onSave={handleSaveProfilePicture}
                 />
               </div>
             </div>
+
+            <div className="mb-8 max-w-2xl">
+              <BasicInfo
+                name={userProfile.name}
+                tagline={userProfile.tagline}
+                email={userProfile.email}
+                phone={userProfile.phone}
+                editable={isEditable}
+                onSave={(data) => updateProfile(data)}
+              />
+            </div>
+            <div className="w-full max-w-md">
+              <SocialLinks
+                links={userProfile.socialLinks || []}
+                editable={isEditable}
+                onSave={(socialLinks) => updateProfile({ socialLinks })}
+              />
+            </div>
+
+            {/* Refactored Action Buttons Component */}
+            <ProfileActions userProfile={userProfile} />
+
           </div>
         </div>
       </div>
